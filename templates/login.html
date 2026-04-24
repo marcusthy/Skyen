@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Sign in</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="field">
+            {{ form.username.label }}
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+        <div class="field">
+            {{ form.password.label }}
+            {{ form.password }}
+            {% for error in form.password.errors %}
+                <span class="error">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {{ form.submit }}
+    </form>
+    <p>No account? <a href="{{ url_for('register') }}">Register</a></p>
+</div>
+{% endblock %}
