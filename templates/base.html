@@ -9,8 +9,17 @@
 </head>
 <body>
     <nav>
-        <span class="logo">Flask ✦ App</span>
-        <a href="/">Home</a>
+        <span class="logo">Flask App</span>
+        <div class="nav-links">
+            <a href="/">Hjem</a>
+            {% if session.get("navn") %}
+                <a href="/welcome">Min side</a>
+                <a href="/logout" class="btn-logout">Logg ut</a>
+            {% else %}
+                <a href="/login">Logg inn</a>
+                <a href="/register">Registrer</a>
+            {% endif %}
+        </div>
     </nav>
     <div class="container">
         {% block content %}{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, session
+from flask import Flask, render_template, redirect, session, url_for
 from forms import RegisterForm, LoginForm
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -76,6 +76,11 @@ def welcome():
     if not navn:
         return redirect("/login")
     return render_template("welcome.html", name=navn)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
 if __name__ == "__main__":
     app.run()

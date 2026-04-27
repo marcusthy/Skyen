@@ -1,11 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Welcome{% endblock %}
+{% block title %}Hjem – {{ name }}{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div>✦</div>
-    <h2>Welcome, {{ name }}!</h2>
-    <p>You are now signed in.</p>
-    <a href="/">&larr; Back to home</a>
+<div class="home-hero">
+    <h1>Hei, {{ name }}!</h1>
+    <p class="home-subtitle">Velkommen til skyen.</p>
 </div>
 {% endblock %}
