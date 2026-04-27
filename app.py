@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, session, url_for
+from flask import Flask, render_template, redirect, session, url_for, request, flash
 from forms import RegisterForm, LoginForm
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -65,6 +65,7 @@ def login():
             passord_db = user[1]
             if check_password_hash(passord_db, passord):
                 session["navn"] = user[0]
+                session["brukernavn"] = brukernavn
                 return redirect("/welcome")
         form.username.errors.append("Feil brukernavn eller passord")
 
@@ -75,7 +76,16 @@ def welcome():
     navn = session.get("navn")
     if not navn:
         return redirect("/login")
-    return render_template("welcome.html", name=navn)
+    return render_template("welcome.html", name=navn, filer=[])
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    navn = session.get("navn")
+    if not navn:
+        return redirect("/login")
+    # TODO: lagre fil i database
+    flash("Opplasting kommer snart!", "success")
+    return redirect("/welcome")
 
 @app.route("/logout")
 def logout():

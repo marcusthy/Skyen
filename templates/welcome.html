@@ -6,4 +6,46 @@
     <h1>Hei, {{ name }}!</h1>
     <p class="home-subtitle">Velkommen til skyen.</p>
 </div>
+
+<div class="upload-box">
+    <h3>Last opp fil</h3>
+    <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
+        <label class="file-drop" id="dropzone">
+            <span class="drop-icon">&#8679;</span>
+            <span class="drop-text">Dra og slipp fil her, eller klikk for å velge</span>
+            <span class="drop-hint">PNG, JPG, PDF, TXT, ZIP, DOCX – maks 16 MB</span>
+            <input type="file" name="fil" id="fileInput" hidden>
+        </label>
+        <span class="selected-file" id="selectedFile"></span>
+        <button type="submit" class="btn btn-primary upload-btn">Last opp</button>
+    </form>
+
+    {% if filer %}
+    <div class="file-list">
+        <h4>Dine filer</h4>
+        <ul>
+            {% for f in filer %}
+            <li>&#128196; {{ f }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    const input = document.getElementById('fileInput');
+    const label = document.getElementById('dropzone');
+    const display = document.getElementById('selectedFile');
+    input.addEventListener('change', () => {
+        display.textContent = input.files[0] ? input.files[0].name : '';
+    });
+    label.addEventListener('dragover', e => { e.preventDefault(); label.classList.add('drag-over'); });
+    label.addEventListener('dragleave', () => label.classList.remove('drag-over'));
+    label.addEventListener('drop', e => {
+        e.preventDefault();
+        label.classList.remove('drag-over');
+        input.files = e.dataTransfer.files;
+        display.textContent = input.files[0] ? input.files[0].name : '';
+    });
+</script>
 {% endblock %}
