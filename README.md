@@ -10,15 +10,16 @@ En selvhostet fillagringsapp bygget med Flask + MySQL inspirert av Google Drive/
 ### Filopplasting
 - [x] Last opp filer fra nettleser
 - [x] Lagre filer på server
-- [ ] Lagre filnavn, størrelse, type og eier i database
+- [x] Lagre filnavn, størrelse, type og eier i database
 - [ ] Begrens filstørrelse og tillatte filtyper
-- [ ] Les metadata fra filer og bilder
-- [ ] Sorter filer automatisk etter dato fra metadata (f.eks. bildet tatt 12. mars → plasseres under mars)
+- [x] Les metadata fra filer og bilder (EXIF via Pillow, creation_time for video via ffprobe)
+- [x] Sorter filer automatisk etter dato fra metadata (f.eks. bildet tatt 12. mars → plasseres under mars)
 
 ### Filvisning
-- [ ] Vis liste over egne filer
-- [ ] Last ned filer
-- [ ] Forhåndsvisning av bilder og PDF
+- [x] Vis liste over egne filer
+- [x] Last ned filer
+- [x] Forhåndsvisning av bilder og videoer (lightbox + videomodal i galleri)
+- [ ] Forhåndsvisning av PDF
 - [ ] Slett filer
 
 ### Deling
@@ -32,11 +33,11 @@ En selvhostet fillagringsapp bygget med Flask + MySQL inspirert av Google Drive/
 - [ ] Undermapper
 
 ### Grensesnitt
-- [ ] Moderne og responsivt design
-- [ ] Dra og slipp opplasting
+- [x] Moderne og responsivt design
+- [x] Dra og slipp opplasting
 - [ ] Søk i filer
 
 ### Sikkerhet
-- [ ] Filer skal kun være tilgjengelig for eieren
+- [x] Filer skal kun være tilgjengelig for eieren
 - [ ] Hastighetsbegrensning på opplasting
 
