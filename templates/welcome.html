@@ -24,16 +24,28 @@
     <div class="file-list">
         <h4>Dine filer</h4>
         <ul>
-            {% for fil_id, filnavn, lastet_opp in filer %}
+            {% for fil_id, filnavn, lastet_opp, filtype in filer %}
             <li>
                 <span>&#128196; {{ filnavn }}</span>
                 <span class="file-meta">{{ lastet_opp.strftime('%d.%m.%Y %H:%M') }}</span>
+                {% if filtype == 'application/pdf' %}
+                <a href="#" class="file-download" onclick="openPdf('{{ url_for('vis_pdf', fil_id=fil_id) }}', '{{ filnavn | e }}'); return false;">Vis</a>
+                {% endif %}
                 <a href="{{ url_for('download', fil_id=fil_id) }}" class="file-download">Last ned</a>
             </li>
             {% endfor %}
         </ul>
     </div>
     {% endif %}
+</div>
+
+<!-- PDF modal -->
+<div class="modal-backdrop" id="pdfBackdrop" onclick="closePdf()">
+    <div class="modal-box pdf-modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closePdf()">&#x2715;</button>
+        <div class="pdf-modal-title" id="pdfName"></div>
+        <iframe id="pdfFrame" src="" style="width:100%;flex:1;border:none;border-radius:0 0 8px 8px;"></iframe>
+    </div>
 </div>
 
 <script>
@@ -51,5 +63,18 @@
         input.files = e.dataTransfer.files;
         display.textContent = input.files[0] ? input.files[0].name : '';
     });
+
+    function openPdf(src, name) {
+        document.getElementById('pdfFrame').src = src;
+        document.getElementById('pdfName').textContent = name;
+        document.getElementById('pdfBackdrop').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closePdf() {
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('pdfBackdrop').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePdf(); });
 </script>
 {% endblock %}

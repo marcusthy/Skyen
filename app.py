@@ -103,7 +103,7 @@ def welcome():
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "SELECT fil_id, filnavn, lastet_opp FROM filer WHERE bruker_id=%s ORDER BY lastet_opp DESC",
+        "SELECT fil_id, filnavn, lastet_opp, filtype FROM filer WHERE bruker_id=%s ORDER BY lastet_opp DESC",
         (bruker_id,)
     )
     filer = cur.fetchall()
@@ -183,6 +183,29 @@ def upload():
     flash(f"{original_filnavn} ble lastet opp!", "success")
     return redirect("/welcome")
 
+@app.route("/vis_pdf/<int:fil_id>")
+def vis_pdf(fil_id):
+    bruker_id = session.get("bruker_id")
+    if not bruker_id:
+        return redirect("/login")
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT filnavn, filtype, filsti FROM filer WHERE fil_id=%s AND bruker_id=%s AND filtype='application/pdf'",
+        (fil_id, bruker_id)
+    )
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    if not row or not row[2] or not os.path.isfile(row[2]):
+        return redirect("/welcome")
+    filnavn, filtype, filsti = row
+    response = make_response()
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = f'inline; filename="{filnavn}"'
+    response.headers["X-Sendfile"] = filsti
+    return response
+
 @app.route("/download/<int:fil_id>")
 def download(fil_id):
     bruker_id = session.get("bruker_id")
@@ -261,6 +284,28 @@ def vis_bilde(fil_id):
     response.headers["Content-Type"] = filtype
     response.headers["X-Sendfile"] = filsti
     return response
+
+@app.route("/slett/<int:fil_id>", methods=["POST"])
+def slett(fil_id):
+    bruker_id = session.get("bruker_id")
+    if not bruker_id:
+        return redirect("/login")
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT filsti FROM filer WHERE fil_id=%s AND bruker_id=%s",
+        (fil_id, bruker_id)
+    )
+    row = cur.fetchone()
+    if row:
+        filsti = row[0]
+        cur.execute("DELETE FROM filer WHERE fil_id=%s AND bruker_id=%s", (fil_id, bruker_id))
+        conn.commit()
+        if filsti and os.path.isfile(filsti):
+            os.remove(filsti)
+    cur.close()
+    conn.close()
+    return redirect("/bilder")
 
 @app.route("/logout")
 def logout():

@@ -607,3 +607,42 @@ input[type="submit"]:hover {
     color: #e5e7eb;
     font-size: .85rem;
 }
+
+.modal-actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+}
+
+.btn-delete {
+    background: transparent;
+    border: 1px solid rgba(239,68,68,.6);
+    color: #fca5a5;
+    padding: .3rem .8rem;
+    border-radius: 6px;
+    font-size: .8rem;
+    cursor: pointer;
+    transition: background .2s, color .2s;
+}
+.btn-delete:hover {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+}
+
+.pdf-modal-box {
+    width: 90vw;
+    height: 90vh;
+    max-width: 1000px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-modal-title {
+    padding: .6rem 1.25rem;
+    color: #e5e7eb;
+    font-size: .85rem;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    flex-shrink: 0;
+}
