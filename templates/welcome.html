@@ -24,8 +24,12 @@
     <div class="file-list">
         <h4>Dine filer</h4>
         <ul>
-            {% for f in filer %}
-            <li>&#128196; {{ f }}</li>
+            {% for fil_id, filnavn, lastet_opp in filer %}
+            <li>
+                <span>&#128196; {{ filnavn }}</span>
+                <span class="file-meta">{{ lastet_opp.strftime('%d.%m.%Y %H:%M') }}</span>
+                <a href="{{ url_for('download', fil_id=fil_id) }}" class="file-download">Last ned</a>
+            </li>
             {% endfor %}
         </ul>
     </div>

@@ -14,10 +14,11 @@
             <a href="/">Hjem</a>
             {% if session.get("navn") %}
                 <a href="/welcome">Min side</a>
+                <a href="/bilder">Bilder</a>
                 <a href="/logout" class="btn-logout">Logg ut</a>
             {% else %}
                 <a href="/login">Logg inn</a>
-                <a href="/register">Registrer</a>
+                <a href="/register">Opprett konto</a>
             {% endif %}
         </div>
     </nav>

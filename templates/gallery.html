@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Bilder{% endblock %}
+
+{% block content %}
+<div class="gallery-header">
+    <h1>Bilder</h1>
+    <p class="home-subtitle">{{ bilder|length }} bilde{% if bilder|length != 1 %}r{% endif %}</p>
+</div>
+
+{% if bilder %}
+<div class="photo-grid">
+    {% for fil_id, filnavn, lastet_opp in bilder %}
+    <div class="photo-tile" onclick="openModal('{{ url_for('vis_bilde', fil_id=fil_id) }}', '{{ filnavn }}', '{{ url_for('download', fil_id=fil_id) }}')">
+        <img src="{{ url_for('vis_bilde', fil_id=fil_id) }}" alt="{{ filnavn }}" loading="lazy">
+        <div class="photo-overlay">
+            <span class="photo-name">{{ filnavn }}</span>
+            <span class="photo-date">{{ lastet_opp.strftime('%d.%m.%Y') }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="gallery-empty">
+    <div class="empty-icon">🖼️</div>
+    <p>Ingen bilder lastet opp ennå.</p>
+    <a href="/welcome" class="btn btn-primary" style="display:inline-block;margin-top:1rem;">Last opp bilder</a>
+</div>
+{% endif %}
+
+<!-- Lightbox modal -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+        <img id="modalImg" src="" alt="">
+        <div class="modal-footer">
+            <span id="modalName"></span>
+            <a id="modalDownload" href="#" class="file-download">Last ned</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(src, name, downloadUrl) {
+    document.getElementById('modalImg').src = src;
+    document.getElementById('modalName').textContent = name;
+    document.getElementById('modalDownload').href = downloadUrl;
+    document.getElementById('modalBackdrop').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+    document.getElementById('modalBackdrop').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('modalImg').src = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+{% endblock %}
