@@ -4,21 +4,43 @@
 {% block content %}
 <div class="gallery-header">
     <h1>Bilder</h1>
-    <p class="home-subtitle">{{ bilder|length }} bilde{% if bilder|length != 1 %}r{% endif %}</p>
+    <p class="home-subtitle">{{ total }} bilde{% if total != 1 %}r{% endif %}</p>
 </div>
 
-{% if bilder %}
-<div class="photo-grid">
-    {% for fil_id, filnavn, lastet_opp in bilder %}
-    <div class="photo-tile" onclick="openModal('{{ url_for('vis_bilde', fil_id=fil_id) }}', '{{ filnavn }}', '{{ url_for('download', fil_id=fil_id) }}')">
-        <img src="{{ url_for('vis_bilde', fil_id=fil_id) }}" alt="{{ filnavn }}" loading="lazy">
-        <div class="photo-overlay">
-            <span class="photo-name">{{ filnavn }}</span>
-            <span class="photo-date">{{ lastet_opp.strftime('%d.%m.%Y') }}</span>
+{% if tidslinje %}
+    {% for maaned, bilder in tidslinje.items() %}
+    <div class="timeline-section">
+        <h2 class="timeline-month">{{ maaned }}</h2>
+        <div class="photo-grid">
+            {% for fil_id, filnavn, dato, fra_exif, er_video in bilder %}
+            {% set src_url = url_for('vis_bilde', fil_id=fil_id) %}
+            {% set dl_url = url_for('download', fil_id=fil_id) %}
+            <div class="photo-tile"
+                data-src="{{ src_url }}"
+                data-name="{{ filnavn | e }}"
+                data-download="{{ dl_url }}"
+                data-video="{{ 'true' if er_video else 'false' }}"
+                onclick="handleTile(this)">
+                {% if er_video %}
+                <div class="video-thumb">
+                    <span class="play-icon">▶</span>
+                    <span class="video-label">{{ filnavn }}</span>
+                </div>
+                {% else %}
+                <img src="{{ src_url }}" alt="{{ filnavn | e }}" loading="lazy">
+                {% endif %}
+                <div class="photo-overlay">
+                    <span class="photo-name">{{ filnavn }}</span>
+                    <span class="photo-date">
+                        {{ dato.strftime('%d.%m.%Y') }}
+                        {% if fra_exif %}<span class="exif-tag" title="Dato fra metadata">📷</span>{% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
     {% endfor %}
-</div>
 {% else %}
 <div class="gallery-empty">
     <div class="empty-icon">🖼️</div>
@@ -27,7 +49,7 @@
 </div>
 {% endif %}
 
-<!-- Lightbox modal -->
+<!-- Lightbox modal (bilder) -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
     <div class="modal-box" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeModal()">&#x2715;</button>
@@ -39,7 +61,29 @@
     </div>
 </div>
 
+<!-- Video modal -->
+<div class="modal-backdrop" id="videoBackdrop" onclick="closeVideo()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeVideo()">&#x2715;</button>
+        <video id="modalVideo" controls style="width:100%;max-height:70vh;border-radius:8px;"></video>
+        <div class="modal-footer">
+            <span id="videoName"></span>
+            <a id="videoDownload" href="#" class="file-download">Last ned</a>
+        </div>
+    </div>
+</div>
+
 <script>
+function handleTile(el) {
+    const src = el.dataset.src;
+    const name = el.dataset.name;
+    const download = el.dataset.download;
+    if (el.dataset.video === 'true') {
+        openVideo(src, name, download);
+    } else {
+        openModal(src, name, download);
+    }
+}
 function openModal(src, name, downloadUrl) {
     document.getElementById('modalImg').src = src;
     document.getElementById('modalName').textContent = name;
@@ -52,6 +96,20 @@ function closeModal() {
     document.body.style.overflow = '';
     document.getElementById('modalImg').src = '';
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+function openVideo(src, name, downloadUrl) {
+    document.getElementById('modalVideo').src = src;
+    document.getElementById('videoName').textContent = name;
+    document.getElementById('videoDownload').href = downloadUrl;
+    document.getElementById('videoBackdrop').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeVideo() {
+    const v = document.getElementById('modalVideo');
+    v.pause();
+    v.src = '';
+    document.getElementById('videoBackdrop').classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeVideo(); } });
 </script>
 {% endblock %}

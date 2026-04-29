@@ -1,13 +1,26 @@
-from flask import Flask, render_template, redirect, session, url_for, request, flash, send_file, make_response, abort
+from flask import Flask, render_template, redirect, session, url_for, request, flash, make_response
 from forms import RegisterForm, LoginForm
+from collections import OrderedDict
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import mimetypes
 import os
 import uuid
+import subprocess
+import json
+from datetime import datetime
+try:
+    from PIL import Image, ExifTags
+    PILLOW_OK = True
+except ImportError:
+    PILLOW_OK = False
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "txt", "zip", "docx", "mp4", "mkv", "mp3"}
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "txt", "zip", "docx", "mp4", "mkv", "mov", "webm", "mp3"}
 UPLOAD_DIR = "/var/www/marcus_files"
+
+IMAGE_TYPES = {"image/png", "image/jpeg", "image/gif", "image/webp"}
+VIDEO_TYPES = {"video/mp4", "video/x-matroska", "video/quicktime", "video/mpeg", "video/webm"}
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -116,16 +129,52 @@ def upload():
     ext = original_filnavn.rsplit(".", 1)[1].lower() if "." in original_filnavn else ""
     unik_filnavn = f"{uuid.uuid4().hex}.{ext}" if ext else uuid.uuid4().hex
     filsti = os.path.join(UPLOAD_DIR, unik_filnavn)
-    filtype = fil.content_type or "application/octet-stream"
+    # Bruk mimetypes for pålitelig filtype-deteksjon, ikke stol på nettleseren
+    filtype, _ = mimetypes.guess_type(original_filnavn)
+    filtype = filtype or "application/octet-stream"
 
     fil.save(filsti)
     filstorrelse = os.path.getsize(filsti)
 
+    # Les EXIF-dato fra bilde hvis mulig
+    exif_dato = None
+    if PILLOW_OK and filtype in IMAGE_TYPES:
+        try:
+            with Image.open(filsti) as img:
+                exif = img.getexif()
+                tag_navn = {v: k for k, v in ExifTags.TAGS.items()}
+                # Prioriter DateTimeOriginal (når bildet ble tatt), deretter DateTime
+                for felt in ("DateTimeOriginal", "DateTime"):
+                    tag_id = tag_navn.get(felt)
+                    if tag_id and tag_id in exif:
+                        exif_dato = datetime.strptime(exif[tag_id], "%Y:%m:%d %H:%M:%S").date()
+                        break
+        except Exception:
+            exif_dato = None
+    elif filtype in VIDEO_TYPES:
+        try:
+            result = subprocess.run(
+                ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", filsti],
+                capture_output=True, text=True, timeout=15
+            )
+            meta = json.loads(result.stdout)
+            creation_time = meta.get("format", {}).get("tags", {}).get("creation_time")
+            if creation_time:
+                # Format: "2024-03-15T14:22:00.000000Z" eller "2024-03-15 14:22:00"
+                for fmt in ("%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"):
+                    try:
+                        exif_dato = datetime.strptime(creation_time, fmt).date()
+                        break
+                    except ValueError:
+                        continue
+        except Exception:
+            exif_dato = None
+
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO filer (bruker_id, filnavn, filtype, filsti, filstorrelse) VALUES (%s, %s, %s, %s, %s)",
-        (bruker_id, original_filnavn, filtype, filsti, filstorrelse)
+        "INSERT INTO filer (bruker_id, filnavn, filtype, filsti, filstorrelse, exif_dato) VALUES (%s, %s, %s, %s, %s, %s)",
+        (bruker_id, original_filnavn, filtype, filsti, filstorrelse, exif_dato)
     )
     conn.commit()
     cur.close()
@@ -161,22 +210,33 @@ def download(fil_id):
     response.headers["X-Sendfile"] = filsti
     return response
 
-IMAGE_TYPES = {"image/png", "image/jpeg", "image/gif", "image/webp"}
-
 @app.route("/bilder")
 def bilder():
     if not session.get("bruker_id"):
         return redirect("/login")
     conn = get_conn()
     cur = conn.cursor()
+    media_types = tuple(IMAGE_TYPES | VIDEO_TYPES)
+    params = (session["bruker_id"],) + media_types
     cur.execute(
-        "SELECT fil_id, filnavn, lastet_opp FROM filer WHERE bruker_id=%s AND filtype IN ('image/png','image/jpeg','image/gif','image/webp') ORDER BY lastet_opp DESC",
-        (session["bruker_id"],)
+        "SELECT fil_id, filnavn, lastet_opp, exif_dato, filtype FROM filer WHERE bruker_id=%s AND filtype IN ({}) ORDER BY COALESCE(exif_dato, DATE(lastet_opp)) DESC, lastet_opp DESC".format(",".join(["%s"] * len(media_types))),
+        params
     )
-    bilder = cur.fetchall()
+    rader = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("gallery.html", bilder=bilder)
+
+    # Grupper etter måned (basert på exif_dato eller lastet_opp)
+    tidslinje = OrderedDict()
+    for fil_id, filnavn, lastet_opp, exif_dato, filtype in rader:
+        dato = exif_dato if exif_dato else lastet_opp.date()
+        maaned_key = dato.strftime("%B %Y")
+        if maaned_key not in tidslinje:
+            tidslinje[maaned_key] = []
+        er_video = filtype.startswith("video/")
+        tidslinje[maaned_key].append((fil_id, filnavn, dato, exif_dato is not None, er_video))
+
+    return render_template("gallery.html", tidslinje=tidslinje, total=sum(len(v) for v in tidslinje.values()))
 
 @app.route("/bilde/<int:fil_id>")
 def vis_bilde(fil_id):
@@ -185,9 +245,11 @@ def vis_bilde(fil_id):
         return redirect("/login")
     conn = get_conn()
     cur = conn.cursor()
+    media_types = tuple(IMAGE_TYPES | VIDEO_TYPES)
+    params = (fil_id, bruker_id) + media_types
     cur.execute(
-        "SELECT filnavn, filtype, filsti FROM filer WHERE fil_id=%s AND bruker_id=%s AND filtype IN ('image/png','image/jpeg','image/gif','image/webp')",
-        (fil_id, bruker_id)
+        "SELECT filnavn, filtype, filsti FROM filer WHERE fil_id=%s AND bruker_id=%s AND filtype IN ({})".format(",".join(["%s"] * len(media_types))),
+        params
     )
     row = cur.fetchone()
     cur.close()
