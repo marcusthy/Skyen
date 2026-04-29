@@ -8,8 +8,8 @@ En selvhostet fillagringsapp bygget med Flask + MySQL inspirert av Google Drive/
 - [x] Innlogging / utlogging
 
 ### Filopplasting
-- [ ] Last opp filer fra nettleser
-- [ ] Lagre filer på server
+- [x] Last opp filer fra nettleser
+- [x] Lagre filer på server
 - [ ] Lagre filnavn, størrelse, type og eier i database
 - [ ] Begrens filstørrelse og tillatte filtyper
 - [ ] Les metadata fra filer og bilder

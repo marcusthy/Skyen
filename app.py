@@ -1,19 +1,19 @@
-from flask import Flask, render_template, redirect, session, url_for, request, flash, send_file
+from flask import Flask, render_template, redirect, session, url_for, request, flash, send_file, make_response, abort
 from forms import RegisterForm, LoginForm
 import mysql.connector
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-import io
+import os
+import uuid
 
-ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "txt", "zip", "docx"}
-MAX_UPLOAD_BYTES = 16 * 1024 * 1024  # 16 MB
+ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "pdf", "txt", "zip", "docx", "mp4", "mkv", "mp3"}
+UPLOAD_DIR = "/var/www/marcus_files"
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 app = Flask(__name__)
 app.secret_key = "hemmelig-nok"
-app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
 
 def get_conn():
     return mysql.connector.connect(
@@ -100,9 +100,8 @@ def welcome():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    navn = session.get("navn")
     bruker_id = session.get("bruker_id")
-    if not navn or not bruker_id:
+    if not bruker_id:
         return redirect("/login")
 
     fil = request.files.get("fil")
@@ -113,45 +112,54 @@ def upload():
         flash("Filtype ikke tillatt.", "error")
         return redirect("/welcome")
 
-    filnavn = secure_filename(fil.filename)
+    original_filnavn = secure_filename(fil.filename)
+    ext = original_filnavn.rsplit(".", 1)[1].lower() if "." in original_filnavn else ""
+    unik_filnavn = f"{uuid.uuid4().hex}.{ext}" if ext else uuid.uuid4().hex
+    filsti = os.path.join(UPLOAD_DIR, unik_filnavn)
     filtype = fil.content_type or "application/octet-stream"
-    data = fil.read()
+
+    fil.save(filsti)
+    filstorrelse = os.path.getsize(filsti)
 
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO filer (bruker_id, filnavn, filtype, data) VALUES (%s, %s, %s, %s)",
-        (session["bruker_id"], filnavn, filtype, data)
+        "INSERT INTO filer (bruker_id, filnavn, filtype, filsti, filstorrelse) VALUES (%s, %s, %s, %s, %s)",
+        (bruker_id, original_filnavn, filtype, filsti, filstorrelse)
     )
     conn.commit()
     cur.close()
     conn.close()
 
-    flash(f"{filnavn} ble lastet opp!", "success")
+    flash(f"{original_filnavn} ble lastet opp!", "success")
     return redirect("/welcome")
 
 @app.route("/download/<int:fil_id>")
 def download(fil_id):
-    navn = session.get("navn")
-    if not navn:
+    bruker_id = session.get("bruker_id")
+    if not bruker_id:
         return redirect("/login")
 
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "SELECT filnavn, filtype, data FROM filer WHERE fil_id=%s AND bruker_id=%s",
-        (fil_id, session["bruker_id"])
+        "SELECT filnavn, filtype, filsti FROM filer WHERE fil_id=%s AND bruker_id=%s",
+        (fil_id, bruker_id)
     )
     row = cur.fetchone()
     cur.close()
     conn.close()
 
-    if not row:
+    if not row or not row[2] or not os.path.isfile(row[2]):
         flash("Filen ble ikke funnet.", "error")
         return redirect("/welcome")
 
-    filnavn, filtype, data = row
-    return send_file(io.BytesIO(data), mimetype=filtype, as_attachment=True, download_name=filnavn)
+    filnavn, filtype, filsti = row
+    response = make_response()
+    response.headers["Content-Type"] = filtype
+    response.headers["Content-Disposition"] = f'attachment; filename="{filnavn}"'
+    response.headers["X-Sendfile"] = filsti
+    return response
 
 IMAGE_TYPES = {"image/png", "image/jpeg", "image/gif", "image/webp"}
 
@@ -172,21 +180,25 @@ def bilder():
 
 @app.route("/bilde/<int:fil_id>")
 def vis_bilde(fil_id):
-    if not session.get("bruker_id"):
+    bruker_id = session.get("bruker_id")
+    if not bruker_id:
         return redirect("/login")
     conn = get_conn()
     cur = conn.cursor()
     cur.execute(
-        "SELECT filnavn, filtype, data FROM filer WHERE fil_id=%s AND bruker_id=%s AND filtype IN ('image/png','image/jpeg','image/gif','image/webp')",
-        (fil_id, session["bruker_id"])
+        "SELECT filnavn, filtype, filsti FROM filer WHERE fil_id=%s AND bruker_id=%s AND filtype IN ('image/png','image/jpeg','image/gif','image/webp')",
+        (fil_id, bruker_id)
     )
     row = cur.fetchone()
     cur.close()
     conn.close()
-    if not row:
+    if not row or not row[2] or not os.path.isfile(row[2]):
         return redirect("/bilder")
-    filnavn, filtype, data = row
-    return send_file(io.BytesIO(data), mimetype=filtype)
+    filnavn, filtype, filsti = row
+    response = make_response()
+    response.headers["Content-Type"] = filtype
+    response.headers["X-Sendfile"] = filsti
+    return response
 
 @app.route("/logout")
 def logout():
