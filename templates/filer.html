@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Alle filer{% endblock %}
+
+{% block content %}
+<div class="gallery-header">
+    <h1>Alle filer</h1>
+    <p class="home-subtitle">{{ filer | length }} fil{% if filer | length != 1 %}er{% endif %} lastet opp</p>
+</div>
+
+{% if filer %}
+<div class="files-table-wrap">
+    <table class="files-table">
+        <thead>
+            <tr>
+                <th>Filnavn</th>
+                <th>Type</th>
+                <th>Størrelse</th>
+                <th>Lastet opp</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fil_id, filnavn, filtype, filstorrelse, lastet_opp in filer %}
+            <tr>
+                <td class="file-name-cell">
+                    <span class="file-type-icon">
+                        {% if filtype and filtype.startswith('image/') %}🖼️
+                        {% elif filtype and filtype.startswith('video/') %}🎬
+                        {% elif filtype == 'application/pdf' %}📄
+                        {% elif filtype and filtype.startswith('audio/') %}🎵
+                        {% elif filtype in ('application/zip', 'application/x-zip-compressed') %}🗜️
+                        {% else %}📁{% endif %}
+                    </span>
+                    {{ filnavn }}
+                </td>
+                <td class="file-meta">{{ filtype or '—' }}</td>
+                <td class="file-meta">
+                    {% if filstorrelse %}
+                        {% if filstorrelse >= 1048576 %}
+                            {{ "%.1f"|format(filstorrelse / 1048576) }} MB
+                        {% elif filstorrelse >= 1024 %}
+                            {{ "%.0f"|format(filstorrelse / 1024) }} KB
+                        {% else %}
+                            {{ filstorrelse }} B
+                        {% endif %}
+                    {% else %}—{% endif %}
+                </td>
+                <td class="file-meta timestamp">{{ lastet_opp.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td class="file-actions">
+                    <a href="{{ url_for('download', fil_id=fil_id) }}" class="file-download">Last ned</a>
+                    <form method="post" action="{{ url_for('slett', fil_id=fil_id) }}" onsubmit="return confirm('Slett denne filen?')" style="display:inline">
+                        <button type="submit" class="btn-delete">Slett</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="gallery-empty">
+    <div class="empty-icon">📁</div>
+    <p>Ingen filer lastet opp ennå.</p>
+    <a href="/welcome" class="btn btn-primary" style="display:inline-block;margin-top:1rem;">Last opp filer</a>
+</div>
+{% endif %}
+{% endblock %}

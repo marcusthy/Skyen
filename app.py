@@ -403,6 +403,26 @@ def slett(fil_id):
     return redirect("/bilder")
 
 
+# Alle filer – viser liste over alle opplastede filer med tidsstempel
+@app.route("/filer")
+def alle_filer():
+    bruker_id = session.get("bruker_id")
+    if not bruker_id:
+        return redirect("/login")
+
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT fil_id, filnavn, filtype, filstorrelse, lastet_opp FROM filer WHERE bruker_id=%s ORDER BY lastet_opp DESC",
+        (bruker_id,)
+    )
+    filer = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    return render_template("filer.html", filer=filer)
+
+
 # Logger ut brukeren ved å tømme sesjonen
 @app.route("/logout")
 def logout():

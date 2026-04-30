@@ -15,7 +15,7 @@
             {% for fil_id, filnavn, dato, fra_exif, er_video in bilder %}
             {% set src_url = url_for('vis_bilde', fil_id=fil_id) %}
             {% set dl_url = url_for('download', fil_id=fil_id) %}
-            <div class="photo-tille"
+            <div class="photo-tile"
                 data-src="{{ src_url }}"
                 data-name="{{ filnavn | e }}"
                 data-download="{{ dl_url }}"

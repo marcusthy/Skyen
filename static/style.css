@@ -548,6 +548,71 @@ input[type="submit"]:hover {
 }
 .empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
 
+/* ── Files table: alle filer med tidsstempel ── */
+.files-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+
+.files-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 14px rgba(79,70,229,.07);
+}
+
+.files-table thead tr {
+    background: #f5f3ff;
+    text-align: left;
+}
+
+.files-table th {
+    padding: .75rem 1rem;
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #6b7280;
+    border-bottom: 1px solid #ede9fe;
+}
+
+.files-table tbody tr {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background .15s;
+}
+
+.files-table tbody tr:last-child { border-bottom: none; }
+.files-table tbody tr:hover { background: #fafafe; }
+
+.files-table td {
+    padding: .7rem 1rem;
+    color: #1e1b4b;
+    vertical-align: middle;
+}
+
+.file-name-cell {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.file-type-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+.files-table .file-meta { color: #6b7280; font-size: .83rem; }
+.files-table .timestamp { white-space: nowrap; }
+
+.files-table .file-actions {
+    white-space: nowrap;
+    display: flex;
+    gap: .4rem;
+    align-items: center;
+}
+
 /* ── Lightbox: modal som vises over alt annet når man klikker en flis ── */
 .modal-backdrop {
     display: none;
