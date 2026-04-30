@@ -446,5 +446,11 @@ def logout():
     session.clear()
     return redirect("/login")
 
+
+# Kontaktside – statisk side med kontaktinformasjon
+@app.route("/kontakt")
+def kontakt():
+    return render_template("kontakt.html")
+
 if __name__ == "__main__":
     app.run()
