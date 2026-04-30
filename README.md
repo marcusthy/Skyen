@@ -19,8 +19,8 @@ En selvhostet fillagringsapp bygget med Flask + MySQL inspirert av Google Drive/
 - [x] Vis liste over egne filer
 - [x] Last ned filer
 - [x] Forhåndsvisning av bilder og videoer (lightbox + videomodal i galleri)
-- [ ] Forhåndsvisning av PDF
-- [ ] Slett filer
+- [x] Forhåndsvisning av PDF
+- [x] Slett filer
 
 ### Deling
 - [ ] Generer delbar lenke per fil
