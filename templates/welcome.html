@@ -29,7 +29,10 @@
                 <span>&#128196; {{ filnavn }}</span>
                 <span class="file-meta">{{ lastet_opp.strftime('%d.%m.%Y %H:%M') }}</span>
                 {% if filtype == 'application/pdf' %}
-                <a href="#" class="file-download" onclick="openPdf('{{ url_for('vis_pdf', fil_id=fil_id) }}', '{{ filnavn | e }}'); return false;">Vis</a>
+                <a href="#" class="file-download"
+                   data-pdf-src="{{ url_for('vis_pdf', fil_id=fil_id) }}"
+                   data-pdf-name="{{ filnavn | e }}"
+                   onclick="openPdf(this.dataset.pdfSrc, this.dataset.pdfName); return false;">Vis</a>
                 {% endif %}
                 <a href="{{ url_for('download', fil_id=fil_id) }}" class="file-download">Last ned</a>
             </li>
@@ -48,33 +51,5 @@
     </div>
 </div>
 
-<script>
-    const input = document.getElementById('fileInput');
-    const label = document.getElementById('dropzone');
-    const display = document.getElementById('selectedFile');
-    input.addEventListener('change', () => {
-        display.textContent = input.files[0] ? input.files[0].name : '';
-    });
-    label.addEventListener('dragover', e => { e.preventDefault(); label.classList.add('drag-over'); });
-    label.addEventListener('dragleave', () => label.classList.remove('drag-over'));
-    label.addEventListener('drop', e => {
-        e.preventDefault();
-        label.classList.remove('drag-over');
-        input.files = e.dataTransfer.files;
-        display.textContent = input.files[0] ? input.files[0].name : '';
-    });
-
-    function openPdf(src, name) {
-        document.getElementById('pdfFrame').src = src;
-        document.getElementById('pdfName').textContent = name;
-        document.getElementById('pdfBackdrop').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function closePdf() {
-        document.getElementById('pdfFrame').src = '';
-        document.getElementById('pdfBackdrop').classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePdf(); });
-</script>
+<script src="{{ url_for('static', filename='welcome.js') }}"></script>
 {% endblock %}
