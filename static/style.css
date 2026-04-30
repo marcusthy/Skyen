@@ -3,9 +3,11 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 100%);
-    color: #1e1b4b;
+    background: #FAFAFA;
+    color: #212121;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ── Nav: toppmeny som ligger fast øverst (sticky) på alle sider ── */
@@ -14,33 +16,32 @@ nav {
     align-items: center;
     justify-content: space-between;
     padding: 0 2.5rem;
-    height: 62px;
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(79,70,229,.1);
-    box-shadow: 0 2px 12px rgba(79,70,229,.06);
+    height: 64px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #EEEEEE;
+    box-shadow: none;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .logo {
-    font-weight: 800;
-    font-size: 1.15rem;
-    color: #4f46e5;
-    letter-spacing: -.3px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #212121;
+    letter-spacing: .5px;
     text-decoration: none;
 }
 
 .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.75rem;
     align-items: center;
 }
 
 .nav-links a {
     text-decoration: none;
-    color: #6b7280;
+    color: #424242;
     font-size: .875rem;
     font-weight: 500;
     padding: .3rem .1rem;
@@ -49,22 +50,23 @@ nav {
 }
 
 .nav-links a:hover {
-    color: #4f46e5;
-    border-bottom-color: #4f46e5;
+    color: #212121;
+    border-bottom-color: #212121;
 }
 
 .btn-logout {
-    background: #fef2f2;
-    color: #dc2626 !important;
-    padding: .35rem .9rem;
-    border-radius: 20px;
+    background: #F5F5F5;
+    color: #424242 !important;
+    padding: .4rem 1rem;
+    border-radius: 8px;
     border-bottom: none !important;
-    font-weight: 600;
-    transition: background .2s !important;
+    font-weight: 500;
+    transition: background .2s, color .2s !important;
 }
 
 .btn-logout:hover {
-    background: #fee2e2 !important;
+    background: #EEEEEE !important;
+    color: #212121 !important;
     border-bottom-color: transparent !important;
 }
 
@@ -72,17 +74,18 @@ nav {
 .container {
     max-width: 960px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
+    padding: 3.5rem 1.5rem;
 }
 
 /* ── Cards: hvitt kort med skygge brukt på login/register/forsiden ── */
 .card {
-    background: #ffffff;
-    border-radius: 16px;
+    background: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    border-radius: 14px;
     padding: 2.75rem 2.5rem;
     max-width: 440px;
     margin: 0 auto;
-    box-shadow: 0 8px 32px rgba(79,70,229,.08), 0 1px 3px rgba(0,0,0,.04);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
     text-align: center;
 }
 
@@ -90,11 +93,12 @@ nav {
     font-size: 1.6rem;
     font-weight: 700;
     margin-bottom: .4rem;
-    color: #1e1b4b;
+    color: #212121;
+    letter-spacing: -.3px;
 }
 
 .card > p {
-    color: #6b7280;
+    color: #757575;
     font-size: .9rem;
     margin-bottom: 1.75rem;
 }
@@ -107,36 +111,36 @@ nav {
 
 .field label {
     display: block;
-    font-size: .8rem;
+    font-size: .75rem;
     font-weight: 600;
-    margin-bottom: .4rem;
-    color: #374151;
+    margin-bottom: .45rem;
+    color: #424242;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: .6px;
 }
 
 .field input[type="text"],
 .field input[type="password"] {
     width: 100%;
-    padding: .65rem 1rem;
-    border: 1.5px solid #e5e7eb;
-    border-radius: 9px;
+    padding: .7rem 1rem;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
     font-size: .95rem;
     font-family: inherit;
-    color: #1e1b4b;
-    background: #fafafa;
+    color: #212121;
+    background: #FAFAFA;
     outline: none;
     transition: border-color .2s, box-shadow .2s, background .2s;
 }
 
 .field input:focus {
-    border-color: #4f46e5;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(79,70,229,.12);
+    border-color: #424242;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(33,33,33,.06);
 }
 
 .field .error {
-    color: #dc2626;
+    color: #b71c1c;
     font-size: .78rem;
     margin-top: .3rem;
     display: block;
@@ -145,36 +149,41 @@ nav {
 /* ── Card link row (index page): knapperaden på forsiden ── */
 .link-row {
     display: flex;
-    gap: 1rem;
+    gap: .75rem;
     justify-content: center;
     margin-top: 1.5rem;
     flex-wrap: wrap;
 }
 
 .link-row a {
-    padding: .6rem 1.6rem;
-    border-radius: 9px;
+    padding: .65rem 1.6rem;
+    border-radius: 8px;
     font-size: .9rem;
     font-weight: 600;
     text-decoration: none;
-    transition: transform .15s, box-shadow .15s;
+    transition: background .2s, color .2s, border-color .2s;
 }
 
 .link-row a:first-child {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #fff;
-    box-shadow: 0 3px 10px rgba(79,70,229,.35);
+    background: #212121;
+    color: #FFFFFF;
+    border: 1px solid #212121;
 }
 
 .link-row a:last-child {
-    background: #f1f5f9;
-    color: #4f46e5;
-    border: 1.5px solid #c7d2fe;
+    background: #FFFFFF;
+    color: #212121;
+    border: 1px solid #E0E0E0;
 }
 
-.link-row a:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(79,70,229,.25);
+.link-row a:first-child:hover {
+    background: #424242;
+    border-color: #424242;
+}
+
+.link-row a:last-child:hover {
+    background: #F5F5F5;
+    border-color: #BDBDBD;
 }
 
 /* ── Buttons: gjenbrukbare knappestiler ── */
@@ -182,141 +191,161 @@ input[type="submit"] {
     display: block;
     width: 100%;
     margin-top: .75rem;
-    padding: .7rem 1.5rem;
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #fff;
-    border: none;
-    border-radius: 9px;
+    padding: .75rem 1.5rem;
+    background: #212121;
+    color: #FFFFFF;
+    border: 1px solid #212121;
+    border-radius: 8px;
     font-size: .95rem;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(79,70,229,.35);
-    transition: opacity .2s, transform .15s;
+    box-shadow: none;
+    transition: background .2s, border-color .2s;
 }
 
 input[type="submit"]:hover {
-    opacity: .9;
-    transform: translateY(-1px);
+    background: #424242;
+    border-color: #424242;
+    transform: none;
 }
 
 .btn {
     display: inline-block;
     padding: .65rem 1.5rem;
-    border-radius: 9px;
+    border-radius: 8px;
     font-size: .95rem;
     font-weight: 600;
     text-decoration: none;
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
-    transition: opacity .2s, transform .15s;
+    transition: background .2s, color .2s, border-color .2s;
 }
 
-.btn:hover { opacity: .88; transform: translateY(-1px); }
+.btn:hover { transform: none; }
 
 .btn-primary {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
-    color: #fff;
+    background: #212121;
+    color: #FFFFFF;
+    border-color: #212121;
     width: 100%;
     margin-top: .5rem;
-    box-shadow: 0 3px 10px rgba(79,70,229,.35);
+}
+
+.btn-primary:hover {
+    background: #424242;
+    border-color: #424242;
 }
 
 .btn-secondary {
-    background: #f1f5f9;
-    color: #4f46e5;
-    border: 1.5px solid #c7d2fe;
+    background: #FFFFFF;
+    color: #212121;
+    border: 1px solid #E0E0E0;
+}
+
+.btn-secondary:hover {
+    background: #F5F5F5;
+    border-color: #BDBDBD;
 }
 
 /* ── Home / welcome page: hero-seksjon og kort-rutenett ── */
 .home-hero {
     text-align: center;
-    padding: 3rem 1rem 2rem;
+    padding: 3rem 1rem 2.5rem;
 }
 
 .home-avatar {
     width: 76px;
     height: 76px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f46e5, #818cf8);
-    color: #fff;
-    font-size: 2.1rem;
-    font-weight: 700;
+    background: #212121;
+    color: #FFFFFF;
+    font-size: 2rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.25rem;
-    box-shadow: 0 6px 20px rgba(79,70,229,.3);
+    margin: 0 auto 1.5rem;
+    box-shadow: none;
+    letter-spacing: -.5px;
 }
 
 .home-hero h1 {
     font-size: 2.2rem;
-    font-weight: 800;
+    font-weight: 700;
     margin-bottom: .5rem;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #212121;
+    letter-spacing: -.5px;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background-clip: initial;
+    background: none;
 }
 
 .home-subtitle {
-    color: #6b7280;
+    color: #757575;
     font-size: 1rem;
 }
 
 .home-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.25rem;
-    margin-bottom: 2rem;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
 }
 
 .home-card {
-    background: #fff;
-    border-radius: 14px;
+    background: #FFFFFF;
+    border-radius: 12px;
     padding: 1.75rem 1.5rem;
-    box-shadow: 0 2px 14px rgba(79,70,229,.07);
-    transition: transform .2s, box-shadow .2s;
-    border: 1px solid #ede9fe;
+    box-shadow: none;
+    transition: border-color .2s, background .2s;
+    border: 1px solid #EEEEEE;
 }
 
 .home-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(79,70,229,.12);
+    transform: none;
+    box-shadow: none;
+    background: #FAFAFA;
+    border-color: #E0E0E0;
 }
 
-.home-card-icon { font-size: 2rem; margin-bottom: .75rem; }
-.home-card h3   { font-size: 1.05rem; margin-bottom: .4rem; color: #1e1b4b; }
-.home-card p    { font-size: .88rem; color: #6b7280; }
+.home-card-icon { font-size: 1.85rem; margin-bottom: .85rem; filter: grayscale(1); opacity: .85; }
+.home-card h3   { font-size: 1.02rem; margin-bottom: .4rem; color: #212121; font-weight: 600; }
+.home-card p    { font-size: .88rem; color: #757575; line-height: 1.5; }
 
 .home-actions { text-align: center; }
 
 /* ── Flash messages: suksess-/feilmeldinger fra Flask flash() ── */
 .flash {
-    padding: .75rem 1.25rem;
-    border-radius: 9px;
+    padding: .8rem 1.25rem;
+    border-radius: 8px;
     margin-bottom: 1.25rem;
     font-size: .9rem;
     font-weight: 500;
+    border: 1px solid #EEEEEE;
+    background: #F5F5F5;
+    color: #212121;
 }
-.flash-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-.flash-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.flash-success { background: #F5F5F5; color: #212121; border: 1px solid #E0E0E0; border-left: 3px solid #424242; }
+.flash-error   { background: #F5F5F5; color: #b71c1c; border: 1px solid #E0E0E0; border-left: 3px solid #b71c1c; }
 
 /* ── Upload box: opplastingskort med drag-and-drop-område ── */
 .upload-box {
-    background: #fff;
-    border-radius: 16px;
+    background: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    border-radius: 14px;
     padding: 2rem 2.5rem;
     max-width: 560px;
     margin: 0 auto 2rem;
-    box-shadow: 0 8px 32px rgba(79,70,229,.08), 0 1px 3px rgba(0,0,0,.04);
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
 }
 
 .upload-box h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1.05rem;
+    font-weight: 600;
     margin-bottom: 1.25rem;
-    color: #1e1b4b;
+    color: #212121;
 }
 
 .file-drop {
@@ -324,42 +353,42 @@ input[type="submit"]:hover {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: .35rem;
-    border: 2px dashed #c7d2fe;
-    border-radius: 12px;
-    padding: 2rem 1.5rem;
+    gap: .4rem;
+    border: 1.5px dashed #E0E0E0;
+    border-radius: 10px;
+    padding: 2.25rem 1.5rem;
     cursor: pointer;
     transition: border-color .2s, background .2s;
-    background: #fafafe;
+    background: #FAFAFA;
 }
 
 .file-drop:hover,
 .file-drop.drag-over {
-    border-color: #4f46e5;
-    background: #eef2ff;
+    border-color: #9E9E9E;
+    background: #F5F5F5;
 }
 
 .drop-icon {
-    font-size: 2.2rem;
-    color: #4f46e5;
+    font-size: 2rem;
+    color: #9E9E9E;
     line-height: 1;
 }
 
 .drop-text {
     font-size: .9rem;
     font-weight: 600;
-    color: #374151;
+    color: #424242;
 }
 
 .drop-hint {
     font-size: .78rem;
-    color: #9ca3af;
+    color: #9E9E9E;
 }
 
 .selected-file {
     display: block;
     font-size: .82rem;
-    color: #4f46e5;
+    color: #424242;
     margin-top: .5rem;
     font-weight: 500;
     min-height: 1.2em;
@@ -373,17 +402,17 @@ input[type="submit"]:hover {
 /* ── File list: liste over opplastede filer på Min side ── */
 .file-list {
     margin-top: 1.75rem;
-    border-top: 1px solid #e5e7eb;
-    padding-top: 1.25rem;
+    border-top: 1px solid #EEEEEE;
+    padding-top: 1.5rem;
 }
 
 .file-list h4 {
-    font-size: .9rem;
+    font-size: .78rem;
     font-weight: 600;
-    color: #6b7280;
+    color: #757575;
     text-transform: uppercase;
-    letter-spacing: .5px;
-    margin-bottom: .75rem;
+    letter-spacing: .6px;
+    margin-bottom: .85rem;
 }
 
 .file-list ul {
@@ -395,11 +424,11 @@ input[type="submit"]:hover {
 
 .file-list li {
     font-size: .9rem;
-    color: #374151;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
+    color: #212121;
+    background: #FAFAFA;
+    border: 1px solid #EEEEEE;
     border-radius: 8px;
-    padding: .5rem .85rem;
+    padding: .55rem .9rem;
     display: flex;
     align-items: center;
     gap: .75rem;
@@ -409,35 +438,38 @@ input[type="submit"]:hover {
 
 .file-meta {
     font-size: .78rem;
-    color: #9ca3af;
+    color: #9E9E9E;
 }
 
 .file-download {
     font-size: .8rem;
     font-weight: 600;
-    color: #4f46e5;
+    color: #424242;
     text-decoration: none;
-    padding: .2rem .6rem;
-    border: 1px solid #c7d2fe;
+    padding: .25rem .7rem;
+    border: 1px solid #E0E0E0;
     border-radius: 6px;
-    transition: background .2s;
+    background: #FFFFFF;
+    transition: background .2s, border-color .2s;
 }
 
-.file-download:hover { background: #eef2ff; }
+.file-download:hover { background: #F5F5F5; border-color: #BDBDBD; }
 
 /* ── Gallery page: tidslinje, bilderutenett og videoflis ── */
 .gallery-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .gallery-header h1 {
     font-size: 2rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-weight: 700;
+    color: #212121;
+    letter-spacing: -.5px;
+    background: none;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    background-clip: initial;
 }
 
 .timeline-section {
@@ -445,42 +477,45 @@ input[type="submit"]:hover {
 }
 
 .timeline-month {
-    font-size: 1.2rem;
+    font-size: .85rem;
     font-weight: 600;
-    color: var(--text-secondary, #888);
+    color: #757575;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: .1em;
     margin-bottom: 1rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: .5rem;
+    border-bottom: 1px solid #EEEEEE;
 }
 
 .exif-tag {
     font-size: 0.75em;
-    opacity: 0.8;
+    opacity: 0.75;
+    color: #9E9E9E;
 }
 
 .video-thumb {
     width: 100%;
     height: 100%;
     min-height: 140px;
-    background: #1a1a2e;
+    background: #EEEEEE;
+    color: #424242;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 6px;
+    border-radius: 10px;
 }
 
 .play-icon {
-    font-size: 2.5rem;
-    opacity: 0.8;
+    font-size: 2.2rem;
+    opacity: 0.7;
+    color: #424242;
 }
 
 .video-label {
     font-size: 0.7rem;
-    color: #aaa;
+    color: #757575;
     text-align: center;
     padding: 0 0.5rem;
     overflow: hidden;
@@ -501,7 +536,8 @@ input[type="submit"]:hover {
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
-    background: #e5e7eb;
+    background: #EEEEEE;
+    border: 1px solid #EEEEEE;
 }
 
 .photo-tile img {
@@ -512,7 +548,7 @@ input[type="submit"]:hover {
     transition: transform .3s;
 }
 
-.photo-tile:hover img { transform: scale(1.05); }
+.photo-tile:hover img { transform: scale(1.04); }
 
 .photo-overlay {
     position: absolute;
@@ -520,7 +556,7 @@ input[type="submit"]:hover {
     left: 0;
     right: 0;
     padding: .5rem .75rem;
-    background: linear-gradient(transparent, rgba(0,0,0,.65));
+    background: linear-gradient(transparent, rgba(0,0,0,.6));
     opacity: 0;
     transition: opacity .2s;
     display: flex;
@@ -530,7 +566,7 @@ input[type="submit"]:hover {
 .photo-tile:hover .photo-overlay { opacity: 1; }
 
 .photo-name {
-    color: #fff;
+    color: #FFFFFF;
     font-size: .78rem;
     font-weight: 600;
     white-space: nowrap;
@@ -538,58 +574,61 @@ input[type="submit"]:hover {
     text-overflow: ellipsis;
 }
 
-.photo-date { color: #d1d5db; font-size: .7rem; }
+.photo-date { color: #E0E0E0; font-size: .7rem; }
 
 /* empty state */
 .gallery-empty {
     text-align: center;
     padding: 4rem 1rem;
-    color: #6b7280;
+    color: #757575;
 }
-.empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: .5; filter: grayscale(1); }
 
 /* ── Files table: alle filer med tidsstempel ── */
 .files-table-wrap {
     overflow-x: auto;
     margin-bottom: 2rem;
+    border: 1px solid #EEEEEE;
+    border-radius: 12px;
+    background: #FFFFFF;
 }
 
 .files-table {
     width: 100%;
     border-collapse: collapse;
     font-size: .9rem;
-    background: #fff;
+    background: #FFFFFF;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 2px 14px rgba(79,70,229,.07);
+    box-shadow: none;
 }
 
 .files-table thead tr {
-    background: #f5f3ff;
+    background: #FAFAFA;
     text-align: left;
 }
 
 .files-table th {
-    padding: .75rem 1rem;
-    font-size: .78rem;
-    font-weight: 700;
+    padding: .85rem 1rem;
+    font-size: .75rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: .05em;
-    color: #6b7280;
-    border-bottom: 1px solid #ede9fe;
+    letter-spacing: .06em;
+    color: #757575;
+    border-bottom: 1px solid #EEEEEE;
 }
 
 .files-table tbody tr {
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid #F5F5F5;
     transition: background .15s;
 }
 
 .files-table tbody tr:last-child { border-bottom: none; }
-.files-table tbody tr:hover { background: #fafafe; }
+.files-table tbody tr:hover { background: #FAFAFA; }
 
 .files-table td {
-    padding: .7rem 1rem;
-    color: #1e1b4b;
+    padding: .8rem 1rem;
+    color: #212121;
     vertical-align: middle;
 }
 
@@ -601,9 +640,9 @@ input[type="submit"]:hover {
     word-break: break-all;
 }
 
-.file-type-icon { font-size: 1.1rem; flex-shrink: 0; }
+.file-type-icon { font-size: 1.1rem; flex-shrink: 0; opacity: .7; }
 
-.files-table .file-meta { color: #6b7280; font-size: .83rem; }
+.files-table .file-meta { color: #757575; font-size: .83rem; }
 .files-table .timestamp { white-space: nowrap; }
 
 .files-table .file-actions {
@@ -618,7 +657,7 @@ input[type="submit"]:hover {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.85);
+    background: rgba(33,33,33,.85);
     z-index: 500;
     align-items: center;
     justify-content: center;
@@ -629,12 +668,12 @@ input[type="submit"]:hover {
     position: relative;
     max-width: 90vw;
     max-height: 90vh;
-    background: #1e1b4b;
-    border-radius: 14px;
+    background: #212121;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
 }
 
 .modal-box img {
@@ -649,7 +688,7 @@ input[type="submit"]:hover {
     top: .75rem;
     right: .75rem;
     background: rgba(0,0,0,.5);
-    color: #fff;
+    color: #FFFFFF;
     border: none;
     border-radius: 50%;
     width: 32px;
@@ -668,9 +707,11 @@ input[type="submit"]:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: .75rem 1.25rem;
-    color: #e5e7eb;
+    padding: .85rem 1.25rem;
+    color: #E0E0E0;
     font-size: .85rem;
+    background: #212121;
+    border-top: 1px solid rgba(255,255,255,.08);
 }
 
 .modal-actions {
@@ -681,18 +722,18 @@ input[type="submit"]:hover {
 
 .btn-delete {
     background: transparent;
-    border: 1px solid rgba(239,68,68,.6);
-    color: #fca5a5;
-    padding: .3rem .8rem;
+    border: 1px solid rgba(255,255,255,.25);
+    color: #E0E0E0;
+    padding: .35rem .85rem;
     border-radius: 6px;
     font-size: .8rem;
     cursor: pointer;
-    transition: background .2s, color .2s;
+    transition: background .2s, color .2s, border-color .2s;
 }
 .btn-delete:hover {
-    background: #ef4444;
-    color: #fff;
-    border-color: #ef4444;
+    background: #b71c1c;
+    color: #FFFFFF;
+    border-color: #b71c1c;
 }
 
 .pdf-modal-box {
@@ -705,9 +746,9 @@ input[type="submit"]:hover {
 }
 
 .pdf-modal-title {
-    padding: .6rem 1.25rem;
-    color: #e5e7eb;
+    padding: .7rem 1.25rem;
+    color: #E0E0E0;
     font-size: .85rem;
-    border-bottom: 1px solid rgba(255,255,255,.1);
+    border-bottom: 1px solid rgba(255,255,255,.08);
     flex-shrink: 0;
 }
