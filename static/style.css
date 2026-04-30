@@ -1,4 +1,4 @@
-/* ── Reset & base ── */
+/* ── Reset & base: nullstiller margin/padding og setter standard skrift/bakgrunn ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -8,7 +8,7 @@ body {
     min-height: 100vh;
 }
 
-/* ── Nav ── */
+/* ── Nav: toppmeny som ligger fast øverst (sticky) på alle sider ── */
 nav {
     display: flex;
     align-items: center;
@@ -68,14 +68,14 @@ nav {
     border-bottom-color: transparent !important;
 }
 
-/* ── Container ── */
+/* ── Container: sentrert innholdsboks med maks-bredde ── */
 .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 3rem 1.5rem;
 }
 
-/* ── Cards ── */
+/* ── Cards: hvitt kort med skygge brukt på login/register/forsiden ── */
 .card {
     background: #ffffff;
     border-radius: 16px;
@@ -99,7 +99,7 @@ nav {
     margin-bottom: 1.75rem;
 }
 
-/* ── Form fields ── */
+/* ── Form fields: stiler for inndatafelt, labels og feilmeldinger ── */
 .field {
     text-align: left;
     margin-bottom: 1.1rem;
@@ -142,7 +142,7 @@ nav {
     display: block;
 }
 
-/* ── Card link row (index page) ── */
+/* ── Card link row (index page): knapperaden på forsiden ── */
 .link-row {
     display: flex;
     gap: 1rem;
@@ -177,7 +177,7 @@ nav {
     box-shadow: 0 6px 18px rgba(79,70,229,.25);
 }
 
-/* ── Buttons ── */
+/* ── Buttons: gjenbrukbare knappestiler ── */
 input[type="submit"] {
     display: block;
     width: 100%;
@@ -228,7 +228,7 @@ input[type="submit"]:hover {
     border: 1.5px solid #c7d2fe;
 }
 
-/* ── Home / welcome page ── */
+/* ── Home / welcome page: hero-seksjon og kort-rutenett ── */
 .home-hero {
     text-align: center;
     padding: 3rem 1rem 2rem;
@@ -291,7 +291,7 @@ input[type="submit"]:hover {
 
 .home-actions { text-align: center; }
 
-/* ── Flash messages ── */
+/* ── Flash messages: suksess-/feilmeldinger fra Flask flash() ── */
 .flash {
     padding: .75rem 1.25rem;
     border-radius: 9px;
@@ -302,7 +302,7 @@ input[type="submit"]:hover {
 .flash-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 .flash-error   { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
-/* ── Upload box ── */
+/* ── Upload box: opplastingskort med drag-and-drop-område ── */
 .upload-box {
     background: #fff;
     border-radius: 16px;
@@ -370,7 +370,7 @@ input[type="submit"]:hover {
     width: 100%;
 }
 
-/* ── File list ── */
+/* ── File list: liste over opplastede filer på Min side ── */
 .file-list {
     margin-top: 1.75rem;
     border-top: 1px solid #e5e7eb;
@@ -425,7 +425,7 @@ input[type="submit"]:hover {
 
 .file-download:hover { background: #eef2ff; }
 
-/* ── Gallery page ── */
+/* ── Gallery page: tidslinje, bilderutenett og videoflis ── */
 .gallery-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -548,7 +548,7 @@ input[type="submit"]:hover {
 }
 .empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
 
-/* ── Lightbox ── */
+/* ── Lightbox: modal som vises over alt annet når man klikker en flis ── */
 .modal-backdrop {
     display: none;
     position: fixed;

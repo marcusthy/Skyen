@@ -15,7 +15,7 @@
             {% for fil_id, filnavn, dato, fra_exif, er_video in bilder %}
             {% set src_url = url_for('vis_bilde', fil_id=fil_id) %}
             {% set dl_url = url_for('download', fil_id=fil_id) %}
-            <div class="photo-tile"
+            <div class="photo-tille"
                 data-src="{{ src_url }}"
                 data-name="{{ filnavn | e }}"
                 data-download="{{ dl_url }}"
@@ -50,7 +50,6 @@
 </div>
 {% endif %}
 
-<!-- Lightbox modal (bilder) -->
 <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal()">
     <div class="modal-box" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeModal()">&#x2715;</button>
@@ -67,7 +66,6 @@
     </div>
 </div>
 
-<!-- Video modal -->
 <div class="modal-backdrop" id="videoBackdrop" onclick="closeVideo()">
     <div class="modal-box" onclick="event.stopPropagation()">
         <button class="modal-close" onclick="closeVideo()">&#x2715;</button>
