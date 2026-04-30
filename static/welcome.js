@@ -2,19 +2,30 @@
 const input = document.getElementById('fileInput');
 const label = document.getElementById('dropzone');
 const display = document.getElementById('selectedFile');
-// Oppdaterer visningen når brukeren velger fil via fildialogen
-input.addEventListener('change', () => {
-    display.textContent = input.files[0] ? input.files[0].name : '';
-});
+
+// Oppsummerer hvilke filer som er valgt (1 fil → navn, flere → antall + første navn)
+function oppdaterValgteFiler() {
+    const filer = input.files;
+    if (!filer || filer.length === 0) {
+        display.textContent = '';
+    } else if (filer.length === 1) {
+        display.textContent = filer[0].name;
+    } else {
+        display.textContent = `${filer.length} filer valgt (${filer[0].name}, …)`;
+    }
+}
+
+// Oppdaterer visningen når brukeren velger filer via fildialogen
+input.addEventListener('change', oppdaterValgteFiler);
 // Markerer dropzone visuelt når en fil dras over den
 label.addEventListener('dragover', e => { e.preventDefault(); label.classList.add('drag-over'); });
 label.addEventListener('dragleave', () => label.classList.remove('drag-over'));
-// Håndterer drop: legger droppet fil inn i input-elementet og viser navnet
+// Håndterer drop: legger droppede filer inn i input-elementet og viser oppsummering
 label.addEventListener('drop', e => {
     e.preventDefault();
     label.classList.remove('drag-over');
     input.files = e.dataTransfer.files;
-    display.textContent = input.files[0] ? input.files[0].name : '';
+    oppdaterValgteFiler();
 });
 
 // Åpner PDF-modal med en <iframe> som peker på PDF-fila

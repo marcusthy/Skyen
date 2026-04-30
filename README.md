@@ -1,5 +1,43 @@
-# Marcus Drive
+# SKYEN
 En selvhostet fillagringsapp bygget med Flask + MySQL inspirert av Google Drive/icloud.
+
+## Oversikt
+
+SKYEN er en personlig "sky" der du kan lagre dine egne filer på din egen
+server. Du oppretter en bruker, logger inn, og får din egen private side der
+du kan laste opp, se og laste ned filene dine.
+
+Hovedfunksjoner:
+- **Egen bruker** med innlogging – ingen andre ser filene dine.
+- **Last opp filer** ved å klikke eller dra-og-slippe (flere filer samtidig).
+- **Min side** viser en liste over alt du har lastet opp.
+- **Galleri** for bilder og videoer, automatisk gruppert etter måned basert
+  på når bildet/videoen ble tatt.
+- **Forhåndsvisning** av bilder, videoer og PDF rett i nettleseren.
+- **Last ned** eller **slett** filer når du vil.
+
+Tanken er å ha noe som ligner Google Drive eller iCloud, men der filene
+faktisk ligger på din egen maskin.
+
+## Hvordan filprosessen fungerer
+
+Når du laster opp en fil i SKYEN skjer dette:
+
+1. **Du velger en fil** i nettleseren enten ved å klikke på opplastingsfeltet
+   eller ved å dra og slippe filen.
+2. **Filen sendes til serveren** når du trykker "Last opp".
+3. **Serveren sjekker filtypen** og avviser filer som ikke er tillatt.
+4. **Filen lagres på disk** med et tilfeldig navn, slik at to filer med samme
+   navn ikke kolliderer. Originalnavnet beholdes så du ser det igjen i listen.
+5. **Metadata leses ut:** for bilder hentes datoen bildet ble tatt (EXIF), og
+   for videoer hentes opptaksdatoen. Slik kan galleriet sortere etter når
+   bildet faktisk ble tatt ikke bare når det ble lastet opp.
+6. **Info om filen lagres i databasen** (eier, navn, type, størrelse, dato).
+7. **Filen dukker opp** i listen din på "Min side" og i galleriet hvis det er
+   bilde eller video.
+
+Når du senere laster ned, viser eller sletter en fil, sjekker serveren alltid
+at filen tilhører deg før den gjør noe.
 
 ## TODO liste
 

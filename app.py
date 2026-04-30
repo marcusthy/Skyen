@@ -168,79 +168,96 @@ def upload():
     if not bruker_id:
         return redirect("/login")
 
-    # Validerer at en fil er sendt med og at endelsen er tillatt
-    fil = request.files.get("fil")
-    if not fil or fil.filename == "":
+    # Henter alle filer som ble sendt inn (støtter flere samtidig via multiple-attributtet)
+    filer = request.files.getlist("fil")
+    filer = [f for f in filer if f and f.filename]
+    if not filer:
         flash("Ingen fil valgt.", "error")
         return redirect("/welcome")
-    if not allowed_file(fil.filename):
-        flash("Filtype ikke tillatt.", "error")
-        return redirect("/welcome")
 
-    # Genererer et unikt filnavn (UUID) på disk – beholder originalnavnet i databasen
-    original_filnavn = secure_filename(fil.filename)
-    ext = original_filnavn.rsplit(".", 1)[1].lower() if "." in original_filnavn else ""
-    unik_filnavn = f"{uuid.uuid4().hex}.{ext}" if ext else uuid.uuid4().hex
-    filsti = os.path.join(UPLOAD_DIR, unik_filnavn)
+    # Teller resultater så vi kan gi en samlet melding til brukeren
+    opplastet = []
+    avvist = []
 
-    # Bruker mimetypes for pålitelig filtype-deteksjon – stoler ikke på nettleseren
-    filtype, _ = mimetypes.guess_type(original_filnavn)
-    filtype = filtype or "application/octet-stream"
+    for fil in filer:
+        if not allowed_file(fil.filename):
+            avvist.append(fil.filename)
+            continue
 
-    # Lagrer fila på disk og henter størrelsen
-    fil.save(filsti)
-    filstorrelse = os.path.getsize(filsti)
+        # Genererer et unikt filnavn (UUID) på disk – beholder originalnavnet i databasen
+        original_filnavn = secure_filename(fil.filename)
+        ext = original_filnavn.rsplit(".", 1)[1].lower() if "." in original_filnavn else ""
+        unik_filnavn = f"{uuid.uuid4().hex}.{ext}" if ext else uuid.uuid4().hex
+        filsti = os.path.join(UPLOAD_DIR, unik_filnavn)
 
-    # Forsøker å hente opprettet-dato fra metadata så galleriet kan sortere etter når bildet/videoen ble tatt
-    exif_dato = None
+        # Bruker mimetypes for pålitelig filtype-deteksjon – stoler ikke på nettleseren
+        filtype, _ = mimetypes.guess_type(original_filnavn)
+        filtype = filtype or "application/octet-stream"
 
-    # Les EXIF-dato fra bilde hvis mulig
-    if PILLOW_OK and filtype in IMAGE_TYPES:
-        try:
-            with Image.open(filsti) as img:
-                exif = img.getexif()
-                tag_navn = {v: k for k, v in ExifTags.TAGS.items()}
-                # Prioriter DateTimeOriginal (når bildet ble tatt), deretter DateTime
-                for felt in ("DateTimeOriginal", "DateTime"):
-                    tag_id = tag_navn.get(felt)
-                    if tag_id and tag_id in exif:
-                        exif_dato = datetime.strptime(exif[tag_id], "%Y:%m:%d %H:%M:%S").date()
-                        break
-        except Exception:
-            exif_dato = None
+        # Lagrer fila på disk og henter størrelsen
+        fil.save(filsti)
+        filstorrelse = os.path.getsize(filsti)
 
-    # For videoer: bruker ffprobe til å lese ut creation_time fra container-metadata
-    elif filtype in VIDEO_TYPES:
-        try:
-            result = subprocess.run(
-                ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", filsti],
-                capture_output=True, text=True, timeout=15
-            )
-            meta = json.loads(result.stdout)
-            creation_time = meta.get("format", {}).get("tags", {}).get("creation_time")
-            if creation_time:
-                # Format: "2024-03-15T14:22:00.000000Z" eller "2024-03-15 14:22:00"
-                for fmt in ("%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"):
-                    try:
-                        exif_dato = datetime.strptime(creation_time, fmt).date()
-                        break
-                    except ValueError:
-                        continue
-        except Exception:
-            exif_dato = None
+        # Forsøker å hente opprettet-dato fra metadata så galleriet kan sortere etter når bildet/videoen ble tatt
+        exif_dato = None
 
-    # Lagrer metadata om fila i databasen
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO filer (bruker_id, filnavn, filtype, filsti, filstorrelse, exif_dato) VALUES (%s, %s, %s, %s, %s, %s)",
-        (bruker_id, original_filnavn, filtype, filsti, filstorrelse, exif_dato)
-    )
-    conn.commit()
-    cur.close()
-    conn.close()
+        # Les EXIF-dato fra bilde hvis mulig
+        if PILLOW_OK and filtype in IMAGE_TYPES:
+            try:
+                with Image.open(filsti) as img:
+                    exif = img.getexif()
+                    tag_navn = {v: k for k, v in ExifTags.TAGS.items()}
+                    # Prioriter DateTimeOriginal (når bildet ble tatt), deretter DateTime
+                    for felt in ("DateTimeOriginal", "DateTime"):
+                        tag_id = tag_navn.get(felt)
+                        if tag_id and tag_id in exif:
+                            exif_dato = datetime.strptime(exif[tag_id], "%Y:%m:%d %H:%M:%S").date()
+                            break
+            except Exception:
+                exif_dato = None
 
-    flash(f"{original_filnavn} ble lastet opp!", "success")
+        # For videoer: bruker ffprobe til å lese ut creation_time fra container-metadata
+        elif filtype in VIDEO_TYPES:
+            try:
+                result = subprocess.run(
+                    ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_format", filsti],
+                    capture_output=True, text=True, timeout=15
+                )
+                meta = json.loads(result.stdout)
+                creation_time = meta.get("format", {}).get("tags", {}).get("creation_time")
+                if creation_time:
+                    # Format: "2024-03-15T14:22:00.000000Z" eller "2024-03-15 14:22:00"
+                    for fmt in ("%Y-%m-%dT%H:%M:%S.%fZ", "%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%d %H:%M:%S"):
+                        try:
+                            exif_dato = datetime.strptime(creation_time, fmt).date()
+                            break
+                        except ValueError:
+                            continue
+            except Exception:
+                exif_dato = None
+
+        # Lagrer metadata om fila i databasen
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO filer (bruker_id, filnavn, filtype, filsti, filstorrelse, exif_dato) VALUES (%s, %s, %s, %s, %s, %s)",
+            (bruker_id, original_filnavn, filtype, filsti, filstorrelse, exif_dato)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        opplastet.append(original_filnavn)
+
+    # Bygger en samlet tilbakemelding til brukeren
+    if opplastet:
+        if len(opplastet) == 1:
+            flash(f"{opplastet[0]} ble lastet opp!", "success")
+        else:
+            flash(f"{len(opplastet)} filer ble lastet opp.", "success")
+    if avvist:
+        flash(f"Avvist (filtype ikke tillatt): {', '.join(avvist)}", "error")
+
     return redirect("/welcome")
 
 

@@ -13,9 +13,9 @@
     <form method="POST" action="/upload" enctype="multipart/form-data" class="upload-form">
         <label class="file-drop" id="dropzone">
             <span class="drop-icon">&#8679;</span>
-            <span class="drop-text">Dra og slipp fil her, eller klikk for å velge</span>
-            <span class="drop-hint">PNG, JPG, PDF, TXT, ZIP, DOCX</span>
-            <input type="file" name="fil" id="fileInput" hidden>
+            <span class="drop-text">Dra og slipp filer her, eller klikk for å velge</span>
+            <span class="drop-hint">PNG, JPG, PDF, TXT, ZIP, DOCX – flere filer støttes</span>
+            <input type="file" name="fil" id="fileInput" multiple hidden>
         </label>
         <span class="selected-file" id="selectedFile"></span>
         <button type="submit" class="btn btn-primary upload-btn">Last opp</button>
