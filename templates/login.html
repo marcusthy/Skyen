@@ -2,26 +2,31 @@
 {% block title %}Logg inn{% endblock %}
 
 {% block content %}
-<div class="card">
-    <h2>Logg inn</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="field">
-            {{ form.username.label }}
-            {{ form.username }}
-            {% for error in form.username.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
-        </div>
-        <div class="field">
-            {{ form.password.label }}
-            {{ form.password }}
-            {% for error in form.password.errors %}
-                <span class="error">{{ error }}</span>
-            {% endfor %}
-        </div>
-        {{ form.submit }}
-    </form>
-    <p>Ingen konto? <a href="{{ url_for('register') }}">Opprett konto</a></p>
+<div class="auth-page">
+    <div class="auth-bg" aria-hidden="true"></div>
+    <div class="card auth-card">
+        <span class="hero-eyebrow">Velkommen tilbake</span>
+        <h2>Logg inn</h2>
+        <p class="auth-sub">Fortsett der du slapp – filene dine venter.</p>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="field">
+                {{ form.username.label }}
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="field">
+                {{ form.password.label }}
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                    <span class="error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            {{ form.submit }}
+        </form>
+        <p class="auth-foot">Ingen konto? <a href="{{ url_for('register') }}">Opprett konto</a></p>
+    </div>
 </div>
 {% endblock %}
