@@ -723,7 +723,7 @@ input[type="submit"]:hover {
 .btn-delete {
     background: transparent;
     border: 1px solid rgba(255,255,255,.25);
-    color: #E0E0E0;
+    color: #212121;
     padding: .35rem .85rem;
     border-radius: 6px;
     font-size: .8rem;

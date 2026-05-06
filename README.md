@@ -44,6 +44,7 @@ at filen tilhører deg før den gjør noe.
 ### Bruker & Autentisering
 - [x] Brukerregistrering
 - [x] Innlogging / utlogging
+- [ ] gjøre sånn at alt av tekst kan tabes gjennom
 
 ### Filopplasting
 - [x] Last opp filer fra nettleser
